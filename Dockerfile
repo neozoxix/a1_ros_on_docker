@@ -143,6 +143,8 @@ RUN apt-get install -y libglib2.0-0 libglib2.0-dev
 # make unitree workspace
 ENV SUPPORT_WS=/root/support_files
 ENV UNITREE_WS=/root/unitree_ws
+ENV REPO_WS=/root/repo_files
+
 RUN mkdir -p $SUPPORT_WS 
 RUN mkdir -p $UNITREE_WS/src
 WORKDIR $UNITREE_WS
@@ -168,9 +170,8 @@ RUN git clone https://github.com/unitreerobotics/unitree_legged_sdk.git && \
     make -j12 
 
 # clone yue env
-WORKDIR $SUPPORT_WS
-RUN git clone https://github.com/yuefufufu/a1_setup_ubuntu20.git
-RUN cd a1_setup_ubuntu20
+WORKDIR $REPO_WS
+RUN git clone https://github.com/neozoxix/a1_ros_on_docker.git
 
 RUN apt install -y ros-noetic-desktop-full
 
@@ -220,15 +221,19 @@ RUN echo "export UNITREE_LEGGED_SDK_PATH=${SUPPORT_WS}/unitree_legged_sdk" >> ~/
 RUN echo "export ALIENGO_SDK_PATH=${SUPPORT_WS}/aliengo_sdk" >> ~/.bashrc
 RUN echo '# amd64, arm32, arm64' >> ~/.bashrc
 RUN echo "export UNITREE_PLATFORM=\"amd64\"" >> ~/.bashrc
-RUN echo "source ${UNITREE_WS}/devel/setup.bash" >> ~/.bashrc
+
+RUN cp -fr $REPO_WS/a1_ros_on_docker/a1_docker_ws_src/unitree_ros $UNITREE_WS/src/
+RUN cp -fr $REPO_WS/a1_ros_on_docker/a1_docker_ws_src/unitree_ros_to_real $UNITREE_WS/src/
+RUN cp -fr $REPO_WS/a1_ros_on_docker/a1_docker_ws_src/unitree_guide $UNITREE_WS/src/
 
 # RUN echo "export ROS_MASTER_URI=http://192.168.123.2:11311;export ROS_IP=192.168.123.2;export ROS_HOSTNAME=192.168.123.2" >> ~/.bashrc
 # compile just unitree ros unitree_legged_msgs
-# RUN ls $UNITREE_WS/src/unitree_ros
-RUN cp -fr ~/support_files/a1_setup_ubuntu20/unitree_ros ~/unitree_ws/src/
-RUN cp -fr ~/support_files/a1_setup_ubuntu20/unitree_ros_to_real ~/unitree_ws/src/
-RUN cp -fr ~/support_files/a1_setup_ubuntu20/unitree_guide ~/unitree_ws/src/
+RUN ls $UNITREE_WS/src/unitree_ros
 RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; catkin build unitree_legged_msgs;"
+
+WORKDIR $UNITREE_WS
+RUN catkin build
+RUN echo "source ${UNITREE_WS}/devel/setup.bash" >> ~/.bashrc
 
 # To use rosparam load yaml files
 RUN pip install pyyaml

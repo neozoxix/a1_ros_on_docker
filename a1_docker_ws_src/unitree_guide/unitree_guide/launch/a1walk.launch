@@ -1,0 +1,8 @@
+<launch>
+	<arg name="freq" default="2.0"/>
+	<arg name="bagfile_name" default="zoxix"/>
+	<node pkg="unitree_guide" type="junior_ctrl" name="junior_ctrl" output="screen"/>
+   	<param name="freqq" value="$(arg freq)"/>
+   	
+   	<node pkg="rosbag" type="record" name="record" args="-a -O /home/untree_ws/rosbag/$(arg bagfile_name)_$(arg freq)" />
+</launch>

@@ -1,0 +1,6 @@
+<launch>
+	<arg name="freq" default="2.0"/>
+	<arg name="bagfile_name" default="myname"/>
+	<node pkg="unitree_guide" type="junior_ctrl" name="junior_ctrl" output="screen"/>
+   	<param name="freqq" value="$(arg freq)"/>
+</launch>

@@ -1,0 +1,6 @@
+<launch>
+	<node pkg="leptrino" type="axissensor" name="axissensor" output="screen"/>
+	
+	<node pkg="rt_usb_9axisimu_driver" type="rt_usb_9axisimu_driver" name="rt_usb_9axisimu_driver" required="true" output="screen"/>
+
+</launch>

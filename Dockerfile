@@ -221,6 +221,9 @@ RUN echo "export UNITREE_LEGGED_SDK_PATH=${SUPPORT_WS}/unitree_legged_sdk" >> ~/
 RUN echo "export ALIENGO_SDK_PATH=${SUPPORT_WS}/aliengo_sdk" >> ~/.bashrc
 RUN echo '# amd64, arm32, arm64' >> ~/.bashrc
 RUN echo "export UNITREE_PLATFORM=\"amd64\"" >> ~/.bashrc
+RUN echo "export ROS_MASTER_URI=http://172.17.0.1:11312" >> ~/.bashrc
+RUN echo "alias roscore='roscore -p 11312'" >> ~/.bashrc
+RUN echo "export GAZEBO_MASTER_URI=http://172.17.0.1:11348" >> ~/.bashrc
 
 RUN cp -fr $REPO_WS/a1_ros_on_docker/a1_docker_ws_src/unitree_ros $UNITREE_WS/src/
 RUN cp -fr $REPO_WS/a1_ros_on_docker/a1_docker_ws_src/unitree_ros_to_real $UNITREE_WS/src/
@@ -237,3 +240,6 @@ RUN echo "source ${UNITREE_WS}/devel/setup.bash" >> ~/.bashrc
 
 # To use rosparam load yaml files
 RUN pip install pyyaml
+
+RUN apt-get update && apt-get install -y iputils-ping
+CMD bash
